@@ -1,4 +1,6 @@
-/app/config
+*.swp
+/app/config/database.php
+/app/config/core.php
 /app/tmp
 /plugins
 /vendors
