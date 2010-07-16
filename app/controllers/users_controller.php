@@ -32,7 +32,7 @@ class UsersController extends AppController {
                                                                                                      'sreg_required' => array('email', 'fullname'), 
                                                                                                      'sreg_optional' => array('nickname', 'gender')));
         } catch (Exception $e) {
-            debug($e);
+            $this->debug($e);
         }
     }
     
@@ -44,22 +44,38 @@ class UsersController extends AppController {
 	} elseif ($response->status == Auth_OpenID_FAILURE) {
 	    echo 'OpenID verification failed: '.$response->message;
 	} elseif ($response->status == Auth_OpenID_SUCCESS) {
-	    echo 'Successfully authenticated!';
+	    echo 'Successfully authenticated!<br />';
 
 	    $openid = $response->identity_url;
-	    debug($openid);
+	    $this->debug($openid);
 
 	    $sregResponse = Auth_OpenID_SRegResponse::fromSuccessResponse($response);
 	    $sreg = $sregResponse->contents();
-	    debug($sreg);
+	    $this->debug($sreg);
 	        
             $axResponse = Auth_OpenID_AX_FetchResponse::fromSuccessResponse($response);
-            debug($axResponse);
-            debug($axResponse->get('http://axschema.org/namePerson'));
-            debug($axResponse->get('http://axschema.org/contact/email'));
-            debug($axResponse->get('http://schema.openid.net/namePerson'));
-            debug($axResponse->get('http://schema.openid.net/contact/email'));
+            $this->debug($axResponse);
+            $this->debug($axResponse->get('http://axschema.org/namePerson'));
+            $this->debug($axResponse->get('http://axschema.org/contact/email'));
+            $this->debug($axResponse->get('http://schema.openid.net/namePerson'));
+            $this->debug($axResponse->get('http://schema.openid.net/contact/email'));
 	}
         exit;
+    }
+
+    // slightly modified version of the debug function in cake/basics.php, shows debug output even if debug == 0
+    private function debug($var = false, $showHtml = false, $showFrom = true) {
+	if ($showFrom) {
+	    $calledFrom = debug_backtrace();
+            echo '<strong>' . substr(str_replace(ROOT, '', $calledFrom[0]['file']), 1) . '</strong>';
+            echo ' (line <strong>' . $calledFrom[0]['line'] . '</strong>)';
+        }
+        echo "\n<pre class=\"cake-debug\">\n";
+
+        $var = print_r($var, true);
+        if ($showHtml) {
+            $var = str_replace('<', '&lt;', str_replace('>', '&gt;', $var));
+        }
+        echo $var . "\n</pre>\n";
     }
 }
