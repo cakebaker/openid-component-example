@@ -55,10 +55,12 @@ class UsersController extends AppController {
 	        
             $axResponse = Auth_OpenID_AX_FetchResponse::fromSuccessResponse($response);
             $this->debug($axResponse);
-            $this->debug($axResponse->get('http://axschema.org/namePerson'));
-            $this->debug($axResponse->get('http://axschema.org/contact/email'));
-            $this->debug($axResponse->get('http://schema.openid.net/namePerson'));
-            $this->debug($axResponse->get('http://schema.openid.net/contact/email'));
+            if ($axResponse) {
+                $this->debug($axResponse->get('http://axschema.org/namePerson'));
+                $this->debug($axResponse->get('http://axschema.org/contact/email'));
+                $this->debug($axResponse->get('http://schema.openid.net/namePerson'));
+                $this->debug($axResponse->get('http://schema.openid.net/contact/email'));
+            }
 	}
         exit;
     }
