@@ -5,7 +5,7 @@ class UsersController extends AppController {
     public $uses = array();
     
     public function login() { 
-        $returnTo = 'http://'.$_SERVER['SERVER_NAME'].'/users/login';
+        $returnTo = 'http://'.$_SERVER['SERVER_NAME'].$this->webroot;
 		
         if ($this->RequestHandler->isPost()) {   
     	    $this->makeOpenIDRequest($this->data['User']['openid'], $returnTo);
