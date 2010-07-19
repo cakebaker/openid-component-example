@@ -260,7 +260,7 @@ class FormHelper extends AppHelper {
 				0 => $id
 			);
 			if (!empty($options['action']) && !isset($options['id'])) {
-				$options['id'] = $model . Inflector::camelize($options['action']) . 'Form';
+				$options['id'] = $this->domId($options['action'] . 'Form');
 			}
 			$options['action'] = array_merge($actionDefaults, (array)$options['url']);
 		} elseif (is_string($options['url'])) {
@@ -306,6 +306,7 @@ class FormHelper extends AppHelper {
 		unset($options['default']);
 		$htmlAttributes = array_merge($options, $htmlAttributes);
 
+		$this->fields = array();
 		if (isset($this->params['_Token']) && !empty($this->params['_Token'])) {
 			$append .= $this->hidden('_Token.key', array(
 				'value' => $this->params['_Token']['key'], 'id' => 'Token' . mt_rand())
@@ -585,6 +586,13 @@ class FormHelper extends AppHelper {
  *		'name' => array('label' => 'custom label')
  *	));
  * }}}
+ *
+ * In addition to fields control, inputs() allows you to use a few additional options.
+ *
+ * - `fieldset` Set to false to disable the fieldset. If a string is supplied it will be used as 
+ *    the classname for the fieldset element.
+ * - `legend` Set to false to disable the legend for the generated input set. Or supply a string
+ *    to customize the legend text.
  *
  * @param mixed $fields An array of fields to generate inputs for, or null.
  * @param array $blacklist a simple array of fields to not create inputs for.

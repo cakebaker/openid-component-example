@@ -356,7 +356,11 @@ class EmailComponent extends Object{
 			}
 		}
 
-		$message = $this->_wrap($content);
+		if ($this->sendAs === 'text') {
+			$message = $this->_wrap($content);
+		} else {
+			$message = $this->_wrap($content, 998);
+		}
 
 		if ($this->template === null) {
 			$message = $this->_formatMessage($message);
@@ -676,10 +680,11 @@ class EmailComponent extends Object{
  * Wrap the message using EmailComponent::$lineLength
  *
  * @param string $message Message to wrap
+ * @param integer $lineLength Max length of line
  * @return array Wrapped message
- * @access private
+ * @access protected
  */
-	function _wrap($message) {
+	function _wrap($message, $lineLength = null) {
 		$message = $this->_strip($message, true);
 		$message = str_replace(array("\r\n","\r"), "\n", $message);
 		$lines = explode("\n", $message);
@@ -690,11 +695,15 @@ class EmailComponent extends Object{
 			$this->lineLength = $this->_lineLength;
 		}
 
+		if (!$lineLength) {
+			$lineLength = $this->lineLength;
+		}
+
 		foreach ($lines as $line) {
 			if (substr($line, 0, 1) == '.') {
 				$line = '.' . $line;
 			}
-			$formatted = array_merge($formatted, explode("\n", wordwrap($line, $this->lineLength, "\n", true)));
+			$formatted = array_merge($formatted, explode("\n", wordwrap($line, $lineLength, "\n", true)));
 		}
 		$formatted[] = '';
 		return $formatted;
@@ -714,7 +723,16 @@ class EmailComponent extends Object{
 		if ($this->delivery == 'mail') {
 			$nl = '';
 		}
-		return mb_encode_mimeheader($subject, $this->charset, 'B', $nl);
+		$internalEncoding = function_exists('mb_internal_encoding');
+		if ($internalEncoding) {
+			$restore = mb_internal_encoding();
+			mb_internal_encoding($this->charset);
+		}
+		$return = mb_encode_mimeheader($subject, $this->charset, 'B', $nl);
+		if ($internalEncoding) {
+			mb_internal_encoding($restore);
+		}
+		return $return;
 	}
 
 /**
@@ -813,7 +831,7 @@ class EmailComponent extends Object{
 			$host = 'localhost';
 		}
 
-		if (!$this->_smtpSend("EHLO {$host}", '250') || !$this->_smtpSend("HELO {$host}", '250')) {
+		if (!$this->_smtpSend("EHLO {$host}", '250') && !$this->_smtpSend("HELO {$host}", '250')) {
 			return false;
 		}
 

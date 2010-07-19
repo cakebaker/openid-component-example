@@ -223,7 +223,7 @@ class Scaffold extends Object {
 	function __scaffoldView($params) {
 		if ($this->controller->_beforeScaffold('view')) {
 
-			$message = __(sprintf("No id set for %s::view()", Inflector::humanize($this->modelKey), true));
+			$message = __(sprintf("No id set for %s::view()", Inflector::humanize($this->modelKey)), true);
 			if (isset($params['pass'][0])) {
 				$this->ScaffoldModel->id = $params['pass'][0];
 			} elseif ($this->_validSession) {
@@ -544,11 +544,17 @@ if (!class_exists('ThemeView')) {
 	App::import('View', 'Theme');
 }
 
+/**
+ * ScaffoldView provides specific view file loading features for scaffolded views.
+ *
+ * @package cake.libs.view
+ */
 class ScaffoldView extends ThemeView {
 
 /**
- * Override _getViewFileName
+ * Override _getViewFileName Appends special scaffolding views in.
  *
+ * @param string $name name of the view file to get.
  * @return string action
  * @access protected
  */

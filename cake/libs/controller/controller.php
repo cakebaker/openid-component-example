@@ -843,8 +843,11 @@ class Controller extends Object {
 
 		$errors = array();
 		foreach ($objects as $object) {
-			$this->{$object->alias}->set($object->data);
-			$errors = array_merge($errors, $this->{$object->alias}->invalidFields());
+			if (isset($this->{$object->alias})) {
+				$object =& $this->{$object->alias};
+			}
+			$object->set($object->data);
+			$errors = array_merge($errors, $object->invalidFields());
 		}
 
 		return $this->validationErrors = (!empty($errors) ? $errors : false);
@@ -862,6 +865,7 @@ class Controller extends Object {
  */
 	function render($action = null, $layout = null, $file = null) {
 		$this->beforeRender();
+		$this->Component->triggerCallback('beforeRender', $this);
 
 		$viewClass = $this->view;
 		if ($this->view != 'View') {
@@ -869,8 +873,6 @@ class Controller extends Object {
 			$viewClass = $viewClass . 'View';
 			App::import('View', $this->view);
 		}
-
-		$this->Component->triggerCallback('beforeRender', $this);
 
 		$this->params['models'] = $this->modelNames;
 
