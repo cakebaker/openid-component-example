@@ -48,3 +48,9 @@
  * Inflector::rules('plural', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
  *
  */
+
+/**
+ * Uncomment this line if you are using Windows
+ */
+// define('Auth_OpenID_RAND_SOURCE', null);
+
