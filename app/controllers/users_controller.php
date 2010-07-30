@@ -2,9 +2,12 @@
 
 class UsersController extends AppController {
     public $components = array('Openid' => array('use_database' => false, 'accept_google_apps' => false), 'RequestHandler');
+    public $helpers = array('Xml');
     public $uses = array();
     
     public function login() { 
+        header('X-XRDS-Location: http://' . $_SERVER['SERVER_NAME'] . $this->webroot . 'users/xrds');
+
         $returnTo = 'http://'.$_SERVER['SERVER_NAME'].$this->webroot;
 		
         if ($this->RequestHandler->isPost()) {   
@@ -16,6 +19,12 @@ class UsersController extends AppController {
         }
     }
     
+    public function xrds() {
+        $this->layout = 'xml/default';
+        header('Content-type: application/xrds+xml');
+        $this->set('returnTo', Router::url($this->webroot, true));
+    }
+
     private function makeOpenIDRequest($openid, $returnTo) {
         try {
             // used by Google, Yahoo
