@@ -10,7 +10,7 @@ class UsersController extends AppController {
 
         $returnTo = 'http://'.$_SERVER['SERVER_NAME'].$this->webroot;
 
-        if ($this->RequestHandler->isPost()) {   
+        if ($this->RequestHandler->isPost() && !$this->Openid->isOpenIDResponse()) {
             $this->makeOpenIDRequest($this->data['User']['openid'], $returnTo);
         }
 
