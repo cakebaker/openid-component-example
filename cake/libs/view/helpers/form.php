@@ -439,6 +439,12 @@ class FormHelper extends AppHelper {
 				}
 			}
 		}
+
+		$last = end($field);
+		if (is_numeric($last) || empty($last)) {
+			array_pop($field);
+		}
+
 		$field = implode('.', $field);
 		if (!in_array($field, $this->fields)) {
 			if ($value !== null) {
@@ -484,7 +490,8 @@ class FormHelper extends AppHelper {
 		$options = array_merge($defaults, $options);
 		$this->setEntity($field);
 
-		if ($error = $this->tagIsInvalid()) {
+		$error = $this->tagIsInvalid();
+		if ($error !== null) {
 			if (is_array($error)) {
 				list(,,$field) = explode('.', $field);
 				if (isset($error[$field])) {
@@ -506,7 +513,7 @@ class FormHelper extends AppHelper {
 				unset($options[$error]);
 			}
 
-			if ($text != null) {
+			if ($text !== null) {
 				$error = $text;
 			} elseif (is_numeric($error)) {
 				$error = sprintf(__('Error in field %s', true), Inflector::humanize($this->field()));
