@@ -28,6 +28,7 @@ App::uses('AppHelper', 'View/Helper');
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html
  */
 class HtmlHelper extends AppHelper {
+
 /**
  * html tags used by this helper.
  *
@@ -45,7 +46,7 @@ class HtmlHelper extends AppHelper {
 		'hidden' => '<input type="hidden" name="%s"%s/>',
 		'checkbox' => '<input type="checkbox" name="%s" %s/>',
 		'checkboxmultiple' => '<input type="checkbox" name="%s[]"%s />',
-		'radio' => '<input type="radio" name="%s" id="%s" %s />%s',
+		'radio' => '<input type="radio" name="%s" id="%s"%s />%s',
 		'selectstart' => '<select name="%s"%s>',
 		'selectmultiplestart' => '<select name="%s[]"%s>',
 		'selectempty' => '<option value=""%s>&nbsp;</option>',
@@ -129,21 +130,23 @@ class HtmlHelper extends AppHelper {
  * @var array
  */
 	protected $_includedScripts = array();
+
 /**
  * Options for the currently opened script block buffer if any.
  *
  * @var array
  */
 	protected $_scriptBlockOptions = array();
+
 /**
  * Document type definitions
  *
  * @var array
  */
 	protected $_docTypes = array(
-		'html4-strict'  => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
-		'html4-trans'  => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
-		'html4-frame'  => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">',
+		'html4-strict' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
+		'html4-trans' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
+		'html4-frame' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">',
 		'html5' => '<!DOCTYPE html>',
 		'xhtml-strict' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
 		'xhtml-trans' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
@@ -178,7 +181,7 @@ class HtmlHelper extends AppHelper {
  *
  * @param string $name Text for link
  * @param string $link URL for link (if empty it won't be a link)
- * @param mixed $options Link attributes e.g. array('id'=>'selected')
+ * @param mixed $options Link attributes e.g. array('id' => 'selected')
  * @return void
  * @see HtmlHelper::link() for details on $options that can be used.
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#creating-breadcrumb-trails-with-htmlhelper
@@ -232,9 +235,9 @@ class HtmlHelper extends AppHelper {
 
 		if (!is_array($type)) {
 			$types = array(
-				'rss'	=> array('type' => 'application/rss+xml', 'rel' => 'alternate', 'title' => $type, 'link' => $url),
-				'atom'	=> array('type' => 'application/atom+xml', 'title' => $type, 'link' => $url),
-				'icon'	=> array('type' => 'image/x-icon', 'rel' => 'icon', 'link' => $url),
+				'rss' => array('type' => 'application/rss+xml', 'rel' => 'alternate', 'title' => $type, 'link' => $url),
+				'atom' => array('type' => 'application/atom+xml', 'title' => $type, 'link' => $url),
+				'icon' => array('type' => 'image/x-icon', 'rel' => 'icon', 'link' => $url),
 				'keywords' => array('name' => 'keywords', 'content' => $url),
 				'description' => array('name' => 'description', 'content' => $url),
 			);
@@ -324,7 +327,7 @@ class HtmlHelper extends AppHelper {
 			$url = $this->url($url);
 		} else {
 			$url = $this->url($title);
-			$title = $url;
+			$title = h(urldecode($url));
 			$escapeTitle = false;
 		}
 
@@ -602,7 +605,7 @@ class HtmlHelper extends AppHelper {
 		}
 		$out = array();
 		foreach ($data as $key=> $value) {
-			$out[] = $key.':'.$value.';';
+			$out[] = $key . ':' . $value . ';';
 		}
 		if ($oneline) {
 			return join(' ', $out);
@@ -642,7 +645,7 @@ class HtmlHelper extends AppHelper {
  * Returns breadcrumbs as a (x)html list
  *
  * This method uses HtmlHelper::tag() to generate list and its elements. Works
- * similiary to HtmlHelper::getCrumbs(), so it uses options which every
+ * similar to HtmlHelper::getCrumbs(), so it uses options which every
  * crumb was added with.
  *
  * @param array $options Array of html attributes to apply to the generated list elements.
@@ -828,6 +831,7 @@ class HtmlHelper extends AppHelper {
  *
  * @param string $tag Tag name
  * @return string Formatted block
+ * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::useTag
  */
 	public function useTag($tag) {
 		if (!isset($this->_tags[$tag])) {
@@ -900,6 +904,7 @@ class HtmlHelper extends AppHelper {
  * @param array $itemOptions Additional HTML attributes of the list item (LI) tag
  * @param string $tag Type of list tag to use (ol/ul)
  * @return string The nested list
+ * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::nestedList
  */
 	public function nestedList($list, $options = array(), $itemOptions = array(), $tag = 'ul') {
 		if (is_string($options)) {
