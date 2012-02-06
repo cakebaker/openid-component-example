@@ -241,6 +241,11 @@ class Debugger {
 				$error = 'Notice';
 				$level = LOG_NOTICE;
 			break;
+			case E_DEPRECATED:
+			case E_USER_DEPRECATED:
+				$error = 'Deprecated';
+				$level = LOG_NOTICE;
+			break;
 			default:
 				return;
 			break;
@@ -646,7 +651,10 @@ class Debugger {
 		$data += $defaults;
 
 		$files = $this->trace(array('start' => $data['start'], 'format' => 'points'));
-		$code = $this->excerpt($files[0]['file'], $files[0]['line'] - 1, 1);
+		$code = '';
+		if (isset($files[0]['file'])) {
+			$code = $this->excerpt($files[0]['file'], $files[0]['line'] - 1, 1);
+		}
 		$trace = $this->trace(array('start' => $data['start'], 'depth' => '20'));
 		$insertOpts = array('before' => '{:', 'after' => '}');
 		$context = array();
@@ -713,5 +721,4 @@ class Debugger {
 			trigger_error(__d('cake_dev', 'Please change the value of \'Security.cipherSeed\' in app/Config/core.php to a numeric (digits only) seed value specific to your application'), E_USER_NOTICE);
 		}
 	}
-
 }

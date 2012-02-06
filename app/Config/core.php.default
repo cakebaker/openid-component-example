@@ -200,6 +200,7 @@
  * timestamping regardless of debug value.
  */
 	//Configure::write('Asset.timestamp', true);
+
 /**
  * Compress CSS output by removing comments, whitespace, repeating tags, etc.
  * This requires a/var/cache directory to be writable by the web server for caching.
@@ -267,7 +268,7 @@
  *		'password' => 'password', //plaintext password (xcache.admin.pass)
  *	));
  *
- * Memcache (http://www.danga.com/memcached/)
+ * Memcache (http://memcached.org/)
  *
  * 	 Cache::config('default', array(
  *		'engine' => 'Memcache', //[required]
