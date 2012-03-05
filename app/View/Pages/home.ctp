@@ -24,7 +24,7 @@ App::uses('Debugger', 'Utility');
 	<p>For updates and important announcements, visit http://cakefest.org</p>
 </iframe>
 <h2><?php echo __d('cake_dev', 'Release Notes for CakePHP %s.', Configure::version()); ?></h2>
-<a href="http://cakephp.org/changelogs/2.0.6"><?php echo __d('cake_dev', 'Read the changelog'); ?> </a>
+<a href="http://cakephp.org/changelogs/<?php echo Configure::version(); ?>"><?php echo __d('cake_dev', 'Read the changelog'); ?> </a>
 <?php
 if (Configure::read('debug') > 0):
 	Debugger::checkSecurityKeys();
@@ -66,7 +66,7 @@ endif;
 		$settings = Cache::settings();
 		if (!empty($settings)):
 			echo '<span class="notice success">';
-				echo __d('cake_dev', 'The %s is being used for caching. To change the config edit APP/Config/core.php ', '<em>'. $settings['engine'] . 'Engine</em>');
+				echo __d('cake_dev', 'The %s is being used for core caching. To change the config edit APP/Config/core.php ', '<em>'. $settings['engine'] . 'Engine</em>');
 			echo '</span>';
 		else:
 			echo '<span class="notice">';
@@ -97,7 +97,7 @@ if (isset($filePresent)):
 	App::uses('ConnectionManager', 'Model');
 	try {
 		$connected = ConnectionManager::getDataSource('default');
-	} catch (Exception $e) {
+	} catch (Exception $connectionError) {
 		$connected = false;
 	}
 ?>
@@ -110,6 +110,8 @@ if (isset($filePresent)):
 		else:
 			echo '<span class="notice">';
 				echo __d('cake_dev', 'Cake is NOT able to connect to the database.');
+				echo '<br /><br />';
+				echo $connectionError->getMessage();
 			echo '</span>';
 		endif;
 	?>
@@ -119,9 +121,9 @@ if (isset($filePresent)):
 	App::uses('Validation', 'Utility');
 	if (!Validation::alphaNumeric('cakephp')) {
 		echo '<p><span class="notice">';
-		__d('cake_dev', 'PCRE has not been compiled with Unicode support.');
-		echo '<br/>';
-		__d('cake_dev', 'Recompile PCRE with Unicode support by adding <code>--enable-unicode-properties</code> when configuring');
+			echo __d('cake_dev', 'PCRE has not been compiled with Unicode support.');
+			echo '<br/>';
+			echo __d('cake_dev', 'Recompile PCRE with Unicode support by adding <code>--enable-unicode-properties</code> when configuring');
 		echo '</span></p>';
 	}
 ?>

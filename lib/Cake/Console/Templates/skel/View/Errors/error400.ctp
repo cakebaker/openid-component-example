@@ -1,9 +1,5 @@
 <?php
 /**
- * Application model for Cake.
- *
- * This file is application-wide model file. You can put all
- * application-wide model-related methods here.
  *
  * PHP 5
  *
@@ -15,21 +11,21 @@
  *
  * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @package       Cake.Model
- * @since         CakePHP(tm) v 0.2.9
+ * @package       Cake.View.Errors
+ * @since         CakePHP(tm) v 0.10.0.1076
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
-App::uses('Model', 'Model');
-
-/**
- * Application model for Cake.
- *
- * This is a placeholder class.
- * Create the same file in app/Model/AppModel.php
- * Add your application-wide methods to the class, your models will inherit them.
- *
- * @package       Cake.Model
- */
-class AppModel extends Model {
-}
+?>
+<h2><?php echo $name; ?></h2>
+<p class="error">
+	<strong><?php echo __d('cake', 'Error'); ?>: </strong>
+	<?php printf(
+		__d('cake', 'The requested address %s was not found on this server.'),
+		"<strong>'{$url}'</strong>"
+	); ?>
+</p>
+<?php
+if (Configure::read('debug') > 0 ):
+	echo $this->element('exception_stack_trace');
+endif;
+?>
