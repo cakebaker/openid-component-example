@@ -1,12 +1,12 @@
 <?php
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Controller.Component
  * @since         CakePHP(tm) v 0.10.0.1076
@@ -79,9 +79,9 @@ class AclComponent extends Component {
  *
  * Will call the initialize method on the adapter if setting a new one.
  *
- * @param mixed $adapter Instance of AclBase or a string name of the class to use. (optional)
- * @return mixed either null, or instance of AclBase
- * @throws CakeException when the given class is not an AclBase
+ * @param mixed $adapter Instance of AclInterface or a string name of the class to use. (optional)
+ * @return mixed either null, or the adapter implementation.
+ * @throws CakeException when the given class is not an instance of AclInterface
  */
 	public function adapter($adapter = null) {
 		if ($adapter) {

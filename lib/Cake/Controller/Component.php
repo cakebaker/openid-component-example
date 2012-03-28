@@ -4,12 +4,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Controller
  * @since         CakePHP(tm) v 1.2
@@ -120,8 +120,8 @@ class Component extends Object {
 	}
 
 /**
- * Called after the Controller::beforeRender(), after the view class is loaded, and before the
- * Controller::render()
+ * Called before the Controller::beforeRender(), and before 
+ * the view class is loaded, and before Controller::render()
  *
  * @param Controller $controller Controller with components to beforeRender
  * @return void

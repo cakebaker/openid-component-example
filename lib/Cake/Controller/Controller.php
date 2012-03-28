@@ -1,12 +1,12 @@
 <?php
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Controller
  * @since         CakePHP(tm) v 0.2.9
@@ -265,7 +265,7 @@ class Controller extends Object implements CakeEventListener {
 	public $methods = array();
 
 /**
- * This controller's primary model class name, the Inflector::classify()'ed version of
+ * This controller's primary model class name, the Inflector::singularize()'ed version of
  * the controller's $name property.
  *
  * Example: For a controller named 'Comments', the modelClass would be 'Comment'
@@ -363,9 +363,6 @@ class Controller extends Object implements CakeEventListener {
 			foreach ($this->uses as $modelClass) {
 				list($plugin, $class) = pluginSplit($modelClass, true);
 				if ($name === $class) {
-					if (!$plugin) {
-						$plugin = $this->plugin ? $this->plugin . '.' : null;
-					}
 					return $this->loadModel($modelClass);
 				}
 			}
