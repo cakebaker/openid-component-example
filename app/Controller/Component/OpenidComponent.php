@@ -34,9 +34,6 @@ class OpenidComponent extends Component {
         parent::__construct($collection, $settings);
         $this->handleSettings($settings);
 
-        // XXX ensure the session is started to avoid "Undefined variable _SESSION" notices from the OpenID lib
-        session_start();
-
         $pathToVendorsFolder = $this->getPathToVendorsFolderWithOpenIDLibrary();
 
         if ($pathToVendorsFolder == '') {
@@ -61,16 +58,23 @@ class OpenidComponent extends Component {
      * Examples:
      *   $dataFields = array('sreg_required' => array('email'), 'sreg_optional' => array('nickname'));
      *   $dataFields = array('ax' => array(Auth_OpenID_AX_AttrInfo::make('http://axschema.org/namePerson')));
+     *
+     * @param bool $anonymous True if the OpenID request is to be sent
+     * to the server without any identifier information.  Use this
+     * when you want to transport data but don't want to do OpenID
+     * authentication with identifiers.
+     * NOTE: $openidUrl need to be the OpenID provider url for proper discovery
+     *
      * @throws InvalidArgumentException if an invalid OpenID was provided
      */
-    public function authenticate($openidUrl, $returnTo, $realm, $dataFields = array()) {
+    public function authenticate($openidUrl, $returnTo, $realm, $dataFields = array(), $anonymous = false) {
         $defaults = array(self::AX => array(), self::SREG_REQUIRED => array(), self::SREG_OPTIONAL => array());
         $dataFields = array_merge($defaults, $dataFields);
         $openidUrl = trim($openidUrl);
 
         if ($openidUrl != '') {
             $consumer = $this->getConsumer();
-            $authRequest = $consumer->begin($openidUrl);
+            $authRequest = $consumer->begin($openidUrl, $anonymous);
         }
 
         if (!isset($authRequest) || !$authRequest) {
@@ -142,7 +146,7 @@ class OpenidComponent extends Component {
     }
 
     private function getConsumer() {
-        $consumer = new Auth_OpenID_Consumer($this->getStore());
+        $consumer = new Auth_OpenID_Consumer($this->getStore(), new Auth_Yadis_CakeSession());
 
         if ($this->acceptGoogleApps) {
             new GApps_OpenID_Discovery($consumer);
@@ -264,11 +268,11 @@ class OpenidComponent extends Component {
     }
 
     private function isOpenIDResponseViaGET() {
-        return (isset($this->controller->params['url']['openid_mode']));
+        return (isset($this->controller->request->query['openid_mode']));
     }
 
     private function isOpenIDResponseViaPOST() {
-        return (isset($this->controller->params['form']['openid_mode']));
+        return (isset($this->controller->request->data['openid_mode']));
     }
 
     private function isPathWithinPlugin($path) {
@@ -293,9 +297,64 @@ class OpenidComponent extends Component {
             throw new Exception('Could not redirect to server: '.$formHtml->message);
         }
 
-        echo '<html><head><title>' . __('OpenID Authentication Redirect', true) . '</title></head>'.
+        echo '<html><head><title>' . __('OpenID Authentication Redirect') . '</title></head>'.
              "<body onload='document.getElementById(\"".$formId."\").submit()'>".
              $formHtml.'</body></html>';
         exit;
+    }
+}
+
+/**
+ * Yadis CakeSession Handler, implements the "interface" defined by Auth_Yadis_PHPSession in Vendor/Auth/Yadis/Manager.php
+ *
+ * Since cake has its own implementation of sessions, we route directly through
+ * the CakeSession class so as to avoid unexpected errors.
+ */
+class Auth_Yadis_CakeSession {
+    private $prefix = 'Yadis';
+
+    /**
+     * Set a session key/value pair.
+     *
+     * @param string $name The name of the session key to add.
+     * @param string $value The value to add to the session.
+     */
+    public function set($name, $value) {
+        CakeSession::write($this->prefix . '.' . $name, $value);
+    }
+
+    /**
+     * Get a key's value from the session.
+     *
+     * @param string $name The name of the key to retrieve.
+     * @param string $default The optional value to return if the key
+     * is not found in the session.
+     * @return string $result The key's value in the session or
+     * $default if it isn't found.
+     */
+    public function get($name, $default = null) {
+        $value = CakeSession::read($this->prefix . '.' . $name);
+
+        if ($value !== null) {
+            return $value;
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * Remove a key/value pair from the session.
+     *
+     * @param string $name The name of the key to remove.
+     */
+    public function del($name) {
+        CakeSession::delete($this->prefix . '.' . $name);
+    }
+
+    /**
+     * Return the contents of the session in array form.
+     */
+    public function contents() {
+        return CakeSession::read($this->prefix);
     }
 }
